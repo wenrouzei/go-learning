@@ -1,6 +1,10 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"reflect"
+	"unsafe"
+)
 
 type Saiyan struct {
 	Name   string
@@ -40,7 +44,19 @@ func main() {
 	c := 123
 	fmt.Println(uint64(c))
 
+	d := &c
+
 	a := contain{Saiyan{"abc", 24323, nil}, "fasdfas"}
 	a.Super()
 	fmt.Println(a.Name, a.Saiyan)
+
+	defer func() {
+		fmt.Println("abc")
+	}()
+
+	fmt.Println("11111")
+
+	fmt.Println(reflect.TypeOf(c), reflect.TypeOf(d))
+
+	fmt.Println(unsafe.Sizeof(c), unsafe.Sizeof(d))
 }
