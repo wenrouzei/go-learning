@@ -33,6 +33,16 @@ type contain struct {
 	test string
 }
 
+type aaa interface {
+	echo()
+}
+
+type aa string
+
+func (a aa) echo() {
+	fmt.Println(a)
+}
+
 func main() {
 	//goku := &Saiyan{"Goku", 9001, &Saiyan{"111", 232, nil}}
 	//goku.Super()
@@ -59,4 +69,9 @@ func main() {
 	fmt.Println(reflect.TypeOf(c), reflect.TypeOf(d))
 
 	fmt.Println(unsafe.Sizeof(c), unsafe.Sizeof(d))
+
+	var first aaa
+	var second aa = "abc"
+	first = second
+	first.echo()
 }
