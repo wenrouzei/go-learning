@@ -1,8 +1,12 @@
 package main
 
 import (
+	"crypto/md5"
 	"fmt"
+	"io"
 	"reflect"
+	"strconv"
+	"time"
 	"unsafe"
 )
 
@@ -74,4 +78,12 @@ func main() {
 	var second aa = "abc"
 	first = second
 	first.echo()
+
+	h := md5.New()
+	fmt.Println(h)
+	io.WriteString(h, strconv.FormatInt(time.Now().Unix(), 10))
+	fmt.Println(h)
+	io.WriteString(h, "ganraomaxxxxxxxxx")
+	token := fmt.Sprintf("%x", h.Sum(nil))
+	fmt.Println(token, h)
 }
