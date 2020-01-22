@@ -86,4 +86,6 @@ func main() {
 	io.WriteString(h, "ganraomaxxxxxxxxx")
 	token := fmt.Sprintf("%x", h.Sum(nil))
 	fmt.Println(token, h)
+
+	fmt.Println(32 << 20)
 }
