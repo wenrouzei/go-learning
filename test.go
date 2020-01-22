@@ -2,8 +2,10 @@ package main
 
 import (
 	"crypto/md5"
+	"errors"
 	"fmt"
 	"io"
+	"os"
 	"reflect"
 	"strconv"
 	"time"
@@ -47,6 +49,13 @@ func (a aa) echo() {
 	fmt.Println(a)
 }
 
+func testEcho() int {
+	defer func() {
+		fmt.Println("defer testEcho")
+	}()
+	return 12
+}
+
 func main() {
 	//goku := &Saiyan{"Goku", 9001, &Saiyan{"111", 232, nil}}
 	//goku.Super()
@@ -88,4 +97,11 @@ func main() {
 	fmt.Println(token, h)
 
 	fmt.Println(32 << 20)
+
+	str, _ := os.Getwd()
+	fmt.Println(str)
+
+	fmt.Println(testEcho())
+
+	fmt.Println(reflect.TypeOf(fmt.Errorf("%w", errors.New("error"))))
 }

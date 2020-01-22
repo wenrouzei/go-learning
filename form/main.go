@@ -63,7 +63,18 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+type Router struct {
+	Name string
+}
+
+func (router *Router) GET(pattern string, fn func(http.ResponseWriter, *http.Request))  {
+	http.HandleFunc(pattern, fn)
+}
+
 func main() {
+	router := &Router{"test"}
+	router.GET("/test", sayhelloName)
+
 	http.HandleFunc("/", sayhelloName) // 设置访问的路由
 	http.HandleFunc("/login", login)   // 设置访问的路由
 	http.HandleFunc("/upload", upload)
