@@ -8,6 +8,7 @@ import (
 	"os"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 	"unsafe"
 )
@@ -104,4 +105,27 @@ func main() {
 	fmt.Println(testEcho())
 
 	fmt.Println(reflect.TypeOf(fmt.Errorf("%w", errors.New("error"))))
+
+	fmt.Println(strings.Index("abc", "a"))
+
+	t := time.Now().UTC()
+	fmt.Println(t)          // Wed Dec 21 08:52:14 +0000 UTC 2011
+	fmt.Println(time.Now()) // Wed Dec 21 09:52:14 +0100 RST 2011
+
+	fmt.Println(deferT())
+}
+
+func deferT() int {
+	fmt.Println("defer1")
+	defer func() {
+		fmt.Println("defer3")
+	}()
+	defer fmt.Println("defer4")
+	return deferS()
+}
+
+func deferS() (x int) {
+	fmt.Println("defer2")
+	x = 0
+	return
 }
