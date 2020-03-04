@@ -13,17 +13,21 @@ func main() {
 		for {
 			select {
 			case v := <-c:
-				println(v)
+				fmt.Println(v)
 			case t := <-time.After(5 * time.Second):
-				println("timeout")
+				fmt.Println("timeout")
 				fmt.Println(t)
 				o <- true
 				break
 			}
 		}
 	}()
+	go func() {
+		fmt.Println("3333")
+	}()
 	fmt.Println(runtime.NumGoroutine())
 	fmt.Println(runtime.NumCPU())
+	c <- 10
 	fmt.Println(<-o)
 	fmt.Println("end")
 }
