@@ -6,9 +6,18 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 )
 
 func main() {
+	char := '你'
+	v1 := rune(char)
+	v2 := byte(char)
+	s1 := strconv.FormatInt(int64(v1), 2)
+	s2 := strconv.FormatInt(int64(v2), 2)
+	fmt.Printf("v1: %c, type: %T, %v\n", v1, v1, s1)
+	fmt.Printf("v2: %c, type: %T, %v\n", v2, v2, s2)
+	fmt.Println(byte('a'))
 	b := bytes.NewBuffer([]byte{})
 	type a struct {
 		B bool `json:"b"`
