@@ -1,14 +1,17 @@
 package main
 
 import (
+	"bufio"
 	"crypto/md5"
 	"errors"
 	"fmt"
 	"io"
 	"os"
 	"reflect"
+	"runtime"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 	"unsafe"
 )
@@ -113,6 +116,30 @@ func main() {
 	fmt.Println(time.Now()) // Wed Dec 21 09:52:14 +0100 RST 2011
 
 	fmt.Println(deferT())
+
+	wg := sync.WaitGroup{}
+	b := make(map[int]int)
+	for i:= 0;i<=100; i++{
+		wg.Add(1)
+		go func(wg *sync.WaitGroup, i int, b map[int]int) {
+			fmt.Println(fmt.Sprintf("%p", b)  ,1111)
+			defer wg.Done()
+			fmt.Println(i)
+
+			//fmt.Println(b)
+		}(&wg, i, b)
+	}
+	wg.Wait()
+	fmt.Println(b)
+	var m runtime.MemStats
+	runtime.ReadMemStats(&m)
+	fmt.Printf("%d Kb\n", m.Alloc / 1024)
+	aa:=33
+	runtime.SetFinalizer(&aa, func(aa *int){})
+	fmt.Printf("y/n?")
+	reader := bufio.NewReader(os.Stdin)
+	data,_,_ := reader.ReadLine()
+	fmt.Printf("%v", string(data))
 }
 
 func deferT() int {
