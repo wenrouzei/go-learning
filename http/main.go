@@ -1,11 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
 	"reflect"
 	"strings"
+	"time"
 )
 
 func sayhelloName(w http.ResponseWriter, r *http.Request) {
@@ -18,6 +20,22 @@ func sayhelloName(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("key:", k)
 		fmt.Println("val:", strings.Join(v, ""), reflect.TypeOf(v).Kind())
 	}
+	//ctx, cancel := context.WithTimeout(r.Context(),time.Second*10)
+	ctx, cancel := context.WithTimeout(context.TODO(), time.Second*10)
+	go func(ctx2 context.Context) {
+		for {
+			select {
+			case <-ctx2.Done():
+				fmt.Println(fmt.Sprintf("ctx2 done %v %p", ctx2.Err(), ctx2))
+				return
+			default:
+				fmt.Println(fmt.Sprintf("ctx run %p", ctx2))
+				time.Sleep(1 * time.Second)
+			}
+		}
+	}(ctx)
+	time.Sleep(time.Second * 5)
+	cancel()
 	fmt.Fprintf(w, "Hello astaxie!") // 这个写入到 w 的是输出到客户端的
 }
 
