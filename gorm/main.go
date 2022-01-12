@@ -82,6 +82,11 @@ func RandomInt(start int, end int) int {
 }
 
 func query() {
+	db, err := gorm.Open("mysql", "root:123456@/test?charset=utf8&parseTime=True&loc=Local")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
 	ctx, cancel := context.WithCancel(context.TODO())
 	var num uint32
 	a := make(chan *Menu, 1000)
@@ -94,10 +99,9 @@ func query() {
 				select {
 				case row, ok := <-a:
 					if ok {
-						time.Sleep(10 * time.Millisecond)
 						atomic.AddUint32(&num, 1)
-						if row.Id < 0 {
-
+						if err := db.Table("menu1").Create(row).Error; err != nil {
+							panic(err)
 						}
 					} else {
 						return
@@ -106,11 +110,6 @@ func query() {
 			}
 		}()
 	}
-	db, err := gorm.Open("mysql", "root:123456@/test?charset=utf8&parseTime=True&loc=Local")
-	if err != nil {
-		panic(err)
-	}
-	defer db.Close()
 	rows, err := db.Table("menu").Rows()
 	if err != nil {
 		panic(err)
