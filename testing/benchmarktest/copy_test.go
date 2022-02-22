@@ -1,15 +1,16 @@
 package benchmarktest
 
 import (
-	"fmt"
 	"sync"
 	"testing"
+	"time"
 )
 
 //go test -bench=^BenchmarkOnly -benchmem -benchtime=10s
 
 type aa struct {
 	A string
+	B time.Time
 }
 
 func aaChOut(wg *sync.WaitGroup, aaCh <-chan aa) {
@@ -21,23 +22,23 @@ func aaChOut(wg *sync.WaitGroup, aaCh <-chan aa) {
 			if ok {
 				i++
 			} else {
-				fmt.Println(i)
+				//fmt.Println(i)
 				return
 			}
 		}
 	}
 }
 
-func bbChOut(wg *sync.WaitGroup, bbCh <-chan *aa) {
+func bbChOut(wg *sync.WaitGroup, aaCh <-chan *aa) {
 	defer wg.Done()
 	var i int
 	for {
 		select {
-		case _, ok := <-bbCh:
+		case _, ok := <-aaCh:
 			if ok {
 				i++
 			} else {
-				fmt.Println(i)
+				//fmt.Println(i)
 				return
 			}
 		}
@@ -47,41 +48,33 @@ func bbChOut(wg *sync.WaitGroup, bbCh <-chan *aa) {
 func BenchmarkOnlyCopy(b *testing.B) {
 	b.ResetTimer()
 	var aaCh = make(chan aa, 100)
-	var wg, wg1 sync.WaitGroup
+	var wg sync.WaitGroup
 	wg.Add(1)
 	go aaChOut(&wg, aaCh)
 	for i := 0; i < b.N; i++ {
-		wg1.Add(1)
-		go func() {
-			defer wg1.Done()
-			cc := aa{
-				A: "a",
-			}
-			aaCh <- cc
-		}()
+		cc := aa{
+			A: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+			B: time.Now(),
+		}
+		aaCh <- cc
 	}
-	wg1.Wait()
 	close(aaCh)
 	wg.Wait()
 }
 
-func BenchmarkOnlyPoint(b *testing.B) {
+func BenchmarkOnlyPointer(b *testing.B) {
 	b.ResetTimer()
-	var bbCh = make(chan *aa, 100)
-	var wg, wg1 sync.WaitGroup
+	var aaCh = make(chan *aa, 100)
+	var wg sync.WaitGroup
 	wg.Add(1)
-	go bbChOut(&wg, bbCh)
+	go bbChOut(&wg, aaCh)
 	for i := 0; i < b.N; i++ {
-		wg1.Add(1)
-		go func() {
-			defer wg1.Done()
-			cc := aa{
-				A: "a",
-			}
-			bbCh <- &cc
-		}()
+		cc := aa{
+			A: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+			B: time.Now(),
+		}
+		aaCh <- &cc
 	}
-	wg1.Wait()
-	close(bbCh)
+	close(aaCh)
 	wg.Wait()
 }
