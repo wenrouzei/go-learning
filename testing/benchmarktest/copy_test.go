@@ -47,6 +47,7 @@ func bbChOut(wg *sync.WaitGroup, aaCh <-chan *aa) {
 
 func BenchmarkOnlyCopy(b *testing.B) {
 	b.ResetTimer()
+	b.StartTimer() //重新开始时间
 	var aaCh = make(chan aa, 100)
 	var wg sync.WaitGroup
 	wg.Add(1)
@@ -64,6 +65,7 @@ func BenchmarkOnlyCopy(b *testing.B) {
 
 func BenchmarkOnlyPointer(b *testing.B) {
 	b.ResetTimer()
+	b.StartTimer() //重新开始时间
 	var aaCh = make(chan *aa, 100)
 	var wg sync.WaitGroup
 	wg.Add(1)
